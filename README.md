@@ -1,63 +1,112 @@
-# Computational Diffraction Simulation  
-**Numerical Diffraction Patterns via Deterministic Integration and Monte Carlo Methods**
+# Computational Diffraction Simulation
+
+**Numerical diffraction patterns via deterministic integration and Monte Carlo methods**
 
 ## Overview
 
-This project implements a computational physics simulation of optical diffraction patterns using numerical methods. The goal is to reproduce and analyse diffraction intensity distributions by directly evaluating the diffraction integral using both deterministic numerical integration and Monte Carlo sampling techniques.
+This project implements a computational physics simulation of optical diffraction patterns by directly evaluating diffraction integrals over an aperture using numerical methods.
 
-The work compares accuracy, convergence behaviour, and computational efficiency across methods, and demonstrates how stochastic sampling can be used to approximate wave interference patterns.
+Both deterministic quadrature and Monte Carlo sampling approaches are implemented and compared. The code generates 1D and 2D diffraction intensity distributions for rectangular and circular apertures in both Fresnel (near-field) and Fraunhofer (far-field) regimes.
 
-This project was developed as part of a computational physics coursework exercise.
+The project investigates:
+
+- Direct numerical evaluation of diffraction integrals
+- Monte Carlo stochastic estimators
+- Convergence and variance behaviour
+- Accuracy vs computational cost tradeoffs
+
+Developed as part of a computational physics coursework project.
 
 ---
 
 ## Physics Background
 
-Diffraction patterns arise from interference of waves passing through an aperture. In scalar diffraction theory, the observed intensity can be computed from an integral over the aperture:
+In scalar diffraction theory, the complex field at a screen point is obtained by summing wave contributions from all points in the aperture with the appropriate phase.
 
-\[
-I(x,y) \propto \left| \int_{\text{aperture}} e^{ik r} \, dA \right|^2
-\]
+Numerically, this is computed as an integral of a complex exponential phase factor over the aperture area. The observed intensity is the squared magnitude of the resulting complex field.
 
-where contributions from each aperture point are summed with appropriate phase.
+Two phase models are implemented:
 
-This project evaluates this integral numerically using:
+**Fresnel diffraction (near field):**
+phase proportional to ((x − x')² + (y − y')²) / (2z)
 
-- Grid-based numerical integration
-- Monte Carlo area sampling
-- Statistical convergence analysis
+**Fraunhofer diffraction (far field):**
+phase proportional to (x'x + y'y) / z
+
+The simulation evaluates these integrals directly using numerical integration and Monte Carlo sampling.
 
 ---
 
 ## Methods Implemented
 
-### Deterministic Numerical Integration
-- Discretised aperture grid
-- Direct summation of phase contributions
-- Controlled resolution studies
-- Baseline accuracy reference
+### Deterministic Numerical Integration (SciPy dblquad)
 
-### Monte Carlo Diffraction Estimator
-- Random sampling over aperture region
-- Stochastic phase summation
-- Variance and convergence analysis
-- Scaling behaviour with sample size
-
-### Comparative Analysis
-- Convergence vs sample count
-- Variance behaviour
-- Accuracy vs compute cost
-- Visual pattern comparison
+- Direct evaluation of real and imaginary parts of the diffraction integral
+- Uses SciPy `dblquad` adaptive quadrature
+- Applied to:
+  - 1D slit diffraction
+  - 2D rectangular apertures
+  - 2D circular apertures
+- Used as an accuracy reference method
+- Includes quadrature error estimates (1D case)
 
 ---
-## Structure
-src/ — simulation code  
-plots/ — generated figures  
-report/ — written analysis  
 
-## Author
-Sammy Bouchebaba — Physics BSc (University of Bristol)
+### Monte Carlo Diffraction Estimator
 
+- Uniform random sampling inside circular apertures
+- Phase contributions averaged stochastically
+- Demonstrates:
+  - Variance scaling proportional to 1/sqrt(N)
+  - Cost vs accuracy tradeoffs
+  - Practical stochastic integration of oscillatory integrals
 
-## Repository Structure
+---
+
+### Comparative Performance Study
+
+Includes a performance comparison module measuring:
+
+- Monte Carlo runtime vs sample count
+- Numerical integration runtime vs grid resolution
+- Error scaling behaviour
+- Efficiency metric defined as roughly 1 / (error × time)
+
+Results are plotted on log–log axes.
+
+---
+
+## Features
+
+### 1D Diffraction
+
+- Fresnel and Fraunhofer regimes
+- Relative intensity plots
+- Absolute and relative error estimates
+- Custom aperture and screen distance
+
+---
+
+### 2D Rectangular Aperture Diffraction
+
+- Fresnel and Fraunhofer modes
+- Adjustable aperture width and height
+- Adjustable resolution and viewing window
+
+---
+
+### 2D Circular Aperture Diffraction
+
+- Deterministic integration
+- Fresnel and Fraunhofer phase models
+- Circular aperture boundary handling
+
+---
+
+### Monte Carlo Circular Diffraction
+
+- Stochastic sampling inside aperture
+- Adjustable sample count
+- Resolution control
+- Visual comparison vs deterministic integration
 
